@@ -65,7 +65,7 @@ async def broadcast_update(data: Dict[str, Any]) -> None:
 @app.get("/api/v1/connect")
 async def connect() -> Dict[str, str]:
     return {
-        "message": f"Connected to api server on port {PORT_API}. Refer to 'http://localhost:{PORT_API}/docs' for api sssdo đcs.",
+        "message": f"Connected to api server on port {PORT_API}. Refer to 'http://localhost:{PORT_API}/docs' for api do cs.",
     }
 
 @app.post("/api/v1/text/inference/load")
