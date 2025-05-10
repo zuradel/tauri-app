@@ -62,28 +62,6 @@ async def broadcast_update(data: Dict[str, Any]) -> None:
         except Exception as e:
             print(f"Broadcast error: {str(e)}")
 
-@app.get("/api/v1/connect")
-async def connect() -> Dict[str, str]:
-    return {
-        "message": f"Connected to api server on port {PORT_API}. Refer to 'http://localhost:{PORT_API}/docs' for api do cs.",
-    }
-
-@app.post("/api/v1/text/inference/load")
-async def load_inference(data: Dict[str, str]) -> Dict[str, str]:
-    try:
-        model_id = data["modelId"]
-        return {"message": f"AI model [{model_id}] loaded."}
-    except KeyError:
-        raise HTTPException(
-            status_code=400, 
-            detail="Invalid JSON format: 'modelId' key not found"
-        )
-
-@app.post("/api/v1/text/inference/completions")
-async def run_completion(data: Dict[str, Any]) -> Dict[str, Any]:
-    print("endpoint: /completions")
-    return infer_text_api.completions(data)
-
 def start_api_server() -> bool:
     try:
         print("Starting API server...")

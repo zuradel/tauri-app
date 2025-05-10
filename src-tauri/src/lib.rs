@@ -1,10 +1,52 @@
 use std::process::Command;
 use tauri::{App};
+use sysinfo::{System, SystemExt, CpuExt};
+use local_ip_address::local_ip;
+use serde::Serialize;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Biendeptrai!", name)
+}
+
+#[derive(Serialize)]
+struct SystemInfo {
+    cpu_usage: f32,
+    ram_total: u64,
+    ram_used: u64,
+    ram_usage_percent: f32,
+    ip_address: String,
+}
+
+// Get system information
+#[tauri::command]
+fn get_system_info() -> SystemInfo {
+    let mut sys = System::new_all();
+    sys.refresh_all();
+    
+    // Calculate average CPU usage across all cores
+    sys.refresh_cpu();
+    let cpu_usage = sys.cpus().iter().map(|cpu| cpu.cpu_usage()).sum::<f32>() / sys.cpus().len() as f32;
+    
+    // Get RAM information
+    let ram_total = sys.total_memory();
+    let ram_used = sys.used_memory();
+    let ram_usage_percent = (ram_used as f32 / ram_total as f32) * 100.0;
+    
+    // Get IP address
+    let ip_address = match local_ip() {
+        Ok(ip) => ip.to_string(),
+        Err(_) => "Unknown".to_string(),
+    };
+    
+    SystemInfo {
+        cpu_usage,
+        ram_total,
+        ram_used, 
+        ram_usage_percent,
+        ip_address
+    }
 }
 
 // Hàm khởi động server FastAPI
@@ -68,7 +110,10 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_python::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet]);
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            get_system_info
+        ]);
 
     // Thiết lập ứng dụng để khởi động server trước khi mở cửa sổ chính
     let app = builder

@@ -24,4 +24,6 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tauri-plugin-python = "0.3.6"
 tauri-plugin-shell = "2"
+sysinfo = "0.29.10"  # For CPU and RAM monitoring
+local-ip-address = "0.5.6"  # For IP address detection
 
