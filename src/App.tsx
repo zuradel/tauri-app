@@ -1,15 +1,15 @@
 import { useState, useCallback } from 'react';
 import reactLogo from './assets/react.svg';
-import { invoke } from '@tauri-apps/api/core';
+// import { invoke } from '@tauri-apps/api/core';
+import { callFunction } from 'tauri-plugin-python-api';
 import './App.css';
 import { Button } from './components/ui/button';
-
 function App() {
   const [greetMsg, setGreetMsg] = useState('');
   const [name, setName] = useState('');
 
   const greet = useCallback(async () => {
-    setGreetMsg(await invoke('greet', { name }));
+    setGreetMsg(await callFunction('greet_py', [name]));
   }, [name]);
 
   const handleSubmit = useCallback(
