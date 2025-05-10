@@ -1,9 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import reactLogo from './assets/react.svg';
 // import { invoke } from '@tauri-apps/api/core';
 import { callFunction } from 'tauri-plugin-python-api';
 import './App.css';
 import { Button } from './components/ui/button';
+import { Command } from '@tauri-apps/plugin-shell';
+
 function App() {
   const [greetMsg, setGreetMsg] = useState('');
   const [name, setName] = useState('');
@@ -27,6 +29,13 @@ function App() {
     []
   );
 
+  useEffect(() => {
+    (async () => {
+      const command = Command.sidecar('bin/api/main');
+      const output = await command.execute();
+      console.log(output);
+    })();
+  }, []);
   return (
     <main className='flex min-h-screen flex-col items-center justify-center gap-8 p-8'>
       <h1 className='text-4xl font-bold text-foreground'>

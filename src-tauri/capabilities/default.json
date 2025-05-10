@@ -8,6 +8,17 @@
   "permissions": [
     "core:default",
     "opener:default",
-    "python:default"
+    "python:default",
+    "shell:default",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "bin/api/main",
+          "sidecar": true
+        }
+      ]
+    },
+    "shell:allow-open"
   ]
 }
