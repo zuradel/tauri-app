@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -11,56 +10,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
-interface Device {
-  id: number;
-  name: string;
-  model: string;
-  os: string;
-  xu: number;
-  status: string;
-  isConnected: boolean;
-}
+import { useDevices } from '@/hooks/useDevices';
 
 const DevicesView = () => {
-  const [selectedDevices, setSelectedDevices] = useState<number[]>([]);
-  const [allSelected, setAllSelected] = useState(false);
-
-  // Mock data
-  const devices: Device[] = Array.from({ length: 25 }, (_, i) => ({
-    id: i + 1,
-    name: `SM-G950F`,
-    model: `SM-G950F`,
-    os: '9',
-    xu: 0,
-    status: `Change info thành công: ${
-      ['asus', 'xiaomi', 'samsung', 'realme', 'kyocera'][
-        Math.floor(Math.random() * 5)
-      ]
-    }/...`,
-    isConnected: true,
-  }));
-
-  const handleSelectAll = () => {
-    if (allSelected) {
-      setSelectedDevices([]);
-    } else {
-      setSelectedDevices(devices.map((device) => device.id));
-    }
-    setAllSelected(!allSelected);
-  };
-
-  const handleSelectDevice = (id: number) => {
-    if (selectedDevices.includes(id)) {
-      setSelectedDevices(selectedDevices.filter((deviceId) => deviceId !== id));
-      setAllSelected(false);
-    } else {
-      setSelectedDevices([...selectedDevices, id]);
-      if (selectedDevices.length + 1 === devices.length) {
-        setAllSelected(true);
-      }
-    }
-  };
+  const {
+    devices,
+    handleSelectDevice,
+    handleSelectAll,
+    handleLoadDevices,
+    allSelected,
+  } = useDevices();
 
   return (
     <div className='flex h-full'>
@@ -98,7 +57,7 @@ const DevicesView = () => {
                 >
                   <TableCell className='p-2'>
                     <Checkbox
-                      checked={selectedDevices.includes(device.id)}
+                      checked={device.isSelected}
                       onCheckedChange={() => handleSelectDevice(device.id)}
                       aria-label={`Select device ${device.id}`}
                     />
@@ -125,7 +84,7 @@ const DevicesView = () => {
         </div>
 
         <div className='mt-2 text-sm text-gray-600 dark:text-gray-300'>
-          Đã chọn: {selectedDevices.length} | Kết nối:{' '}
+          Đã chọn: {devices.filter((d) => d.isSelected).length} | Kết nối:{' '}
           {devices.filter((d) => d.isConnected).length} | Tất cả:{' '}
           {devices.length}
         </div>
@@ -138,7 +97,10 @@ const DevicesView = () => {
           <div>
             <Input placeholder='Tìm kiếm' className='mb-2' />
             <div className='grid grid-cols-2 gap-2'>
-              <Button className='bg-green-500 hover:bg-green-600'>
+              <Button
+                onClick={handleLoadDevices}
+                className='bg-green-500 hover:bg-green-600'
+              >
                 Load List Device
               </Button>
               <Button variant='destructive'>Restart ReLoad</Button>

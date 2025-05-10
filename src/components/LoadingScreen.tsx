@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button } from './ui/button';
+import { AlertCircle } from 'lucide-react';
 
 interface LoadingScreenProps {
-  onComplete: () => void;
-  error: string | null;
+  onComplete?: () => void;
+  error?: string | null;
 }
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete, error }) => {
@@ -15,15 +16,18 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete, error }) => {
 
       {error ? (
         <>
-          <div className='text-red-500 text-center max-w-md'>
-            <p className='text-lg font-semibold mb-2'>Lỗi kết nối server:</p>
-            <p className='bg-red-50 p-3 rounded-md text-sm break-words'>
-              {error}
-            </p>
+          <div className='flex items-center gap-2 text-destructive mb-2'>
+            <AlertCircle className='h-5 w-5' />
+            <span>Lỗi kết nối</span>
           </div>
-          <Button onClick={onComplete} className='mt-4 px-6'>
-            Tiếp tục vào ứng dụng
-          </Button>
+          <p className='text-muted-foreground text-center max-w-md mb-4'>
+            {error}
+          </p>
+          {onComplete && (
+            <Button onClick={onComplete}>
+              Tiếp tục sử dụng không có kết nối
+            </Button>
+          )}
         </>
       ) : (
         <>

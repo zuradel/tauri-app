@@ -25,6 +25,7 @@ connected_clients: List[WebSocket] = []
 
 async def execute_adb_command(command: str) -> Dict[str, Any]:
     """Execute ADB command and return result"""
+    print(command)
     try:
         d = u2.connect()
         if command == "status":
@@ -38,7 +39,7 @@ async def execute_adb_command(command: str) -> Dict[str, Any]:
         else:
             return {"error": "Unknown command"}
     except Exception as e:
-        return {"error": str(e)}
+        return {"error": str(e), "command": command, "data": None}
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):

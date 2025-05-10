@@ -1,16 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { WebSocketProvider } from './components/WebSocketProvider';
 
 // Prevent right-click context menu
-document.addEventListener(
-  'contextmenu',
-  (e) => {
-    e.preventDefault();
-    return false;
-  },
-  { capture: true }
-);
+// document.addEventListener(
+//   'contextmenu',
+//   (e) => {
+//     e.preventDefault();
+//     return false;
+//   },
+//   { capture: true }
+// );
 
 // Prevent F12 and other developer tools keyboard shortcuts
 document.addEventListener(
@@ -45,6 +46,8 @@ document.addEventListener(
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <WebSocketProvider wsUrl='ws://localhost:8008/ws'>
+      <App />
+    </WebSocketProvider>
   </React.StrictMode>
 );
